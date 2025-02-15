@@ -1,26 +1,37 @@
 import requests
 import pandas as pd
 
-url = "https://apidadosabertos.saude.gov.br/arboviroses/dengue?nu_ano=2024&limit=100&offset=0"
+base_url = "https://apidadosabertos.saude.gov.br/arboviroses/dengue"
 
-response = requests.get(url)
+limit = 100
+offset = 0
+dados = []
+pagina = 0
 
-if response.status_code == 200:
-    dados = response.json()
+while True:
+    params = {"nu_ano": 2025, "limit": limit, "offset": offset}
+    response = requests.get(base_url, params=params)
+
+    if response.status_code != 200:
+        print(f"Erro na requisição: {response.status_code}")
+        break
+
+    registros = response.json()
+
     
-    if "parametros" in dados:
-        lista_dados = dados["parametros"]
-        
-        df = pd.DataFrame(lista_dados)
+    if not registros:
+        break
 
-        print(df.head(10))
-        
-        df.to_csv("dengue.csv", index=False)
-        print("Arquivo salvo: dengue.csv")
-    else:
-        print("Chave 'parametros' não encontrada na resposta da API.")
+    dados.extend(registros)
 
-else:
-    print(f"Erro na requisição: {response.status_code}")
+    offset += 1
 
-print(f"Número de registros retornados: {len(lista_dados)}")
+    if offset == 10:
+        break
+
+      
+df = pd.DataFrame(dados)
+
+df.to_csv("dados_dengue.csv", index=False,  encoding="utf-8")
+print("Arquivo salvo: dados_dengue.csv")
+print(f"Número de registros retornados: {len(dados)}")
