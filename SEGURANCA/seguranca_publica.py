@@ -7,12 +7,6 @@ pasta = r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃ
 # Lista para armazenar os DataFrames processados
 dataframes = []
 
-# Lista com os meses do ano
-meses = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-]
-
 # Percorre os arquivos na pasta
 for arquivo in os.listdir(pasta):
     if arquivo.endswith('.xlsx') or arquivo.endswith('.xls'):
