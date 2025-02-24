@@ -1,8 +1,14 @@
 import os
 import pandas as pd
+import re
+import warnings
+warnings.simplefilter("ignore", UserWarning)
 
 # Defina o caminho da pasta onde estão os arquivos
-pasta = r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SEGURANÇA PÚBLICA\DADOS\XLSX"
+pasta = r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SEGURANÇA PÚBLICA\DADOS\XLSX\2024"
+
+# Extrai o ano da pasta (última parte do caminho)
+ano = os.path.basename(pasta)
 
 # Lista para armazenar os DataFrames processados
 dataframes = []
@@ -11,54 +17,44 @@ dataframes = []
 for arquivo in os.listdir(pasta):
     if arquivo.endswith('.xlsx') or arquivo.endswith('.xls'):
         caminho_arquivo = os.path.join(pasta, arquivo)
+        
+        try:
+            # Lê o arquivo sem definir um cabeçalho (para capturar colunas sem nome)
+            df = pd.read_excel(caminho_arquivo, engine="openpyxl", header=None)
 
-        # Lê o arquivo sem definir um cabeçalho (para capturar colunas sem nome)
-        df = pd.read_excel(caminho_arquivo, header=None)
+            # Garante que há pelo menos uma linha para definir como cabeçalho
+            if not df.empty and len(df) > 1:
+                df.columns = df.iloc[0]  # Usa a primeira linha como cabeçalho real
+                df = df[1:].reset_index(drop=True)  # Remove a linha original de cabeçalho
 
-        # Define o nome correto da primeira coluna (antes estava em branco)
-        df.iloc[0, 0] = "Categoria"  
+                # 🔹 Extrai informações do nome do arquivo
+                categoria_match = re.search(r'\((.*?)\)', arquivo)  # Pega o que está entre parênteses
+                unidade_match = re.search(r'-(.*?)_', arquivo)  # Pega o que está entre "-" e "_"
 
-        # Usa a primeira linha como cabeçalho real
-        df.columns = df.iloc[0]  
-        df = df[1:].reset_index(drop=True)  # Remove a linha original de cabeçalho
+                categoria = categoria_match.group(1) if categoria_match else "Desconhecido"
+                unidade = unidade_match.group(1).strip() if unidade_match else "Desconhecido"
 
-        # Ajusta o número de colunas conforme o arquivo
-        num_colunas = len(df.columns) - 1
-        df.columns = ["Categoria"] + meses[:num_colunas]
+                # 🔹 Adiciona as novas colunas ao DataFrame
+                df["Categoria"] = categoria
+                df["Unidade"] = unidade
+                df["Ano"] = ano
 
-        # Identifica o tipo do arquivo com base no nome
-        nome_base = os.path.splitext(arquivo)[0]
-        if "Criminal" in nome_base:
-            tipo = "Criminal"
-        elif "ProdutividadePolicial" in nome_base:
-            tipo = "Produtividade Policial"
-        else:
-            tipo = "Desconhecido"
+                dataframes.append(df)
+            else:
+                print(f"Aviso: Arquivo '{arquivo}' está vazio ou não possui dados suficientes.")
 
-        # Extrai a unidade e o ano do nome do arquivo
-        partes = nome_base.rsplit("_", 1)
-        if len(partes) == 2:
-            unidade = partes[0].replace("OcorrenciaMensal(Criminal)-", "").replace("OcorrenciaMensal(ProdutividadePolicial)-", "").strip()
-            ano = partes[1]
-        else:
-            unidade = "Desconhecido"
-            ano = "Desconhecido"
+        except Exception as e:
+            print(f"Erro ao processar '{arquivo}': {e}")
 
-        # Transforma o DataFrame de formato largo para longo (melt)
-        df_long = df.melt(id_vars=["Categoria"], var_name="Mês", value_name="Valor")
+# Concatena os DataFrames se houver arquivos válidos
+if dataframes:
+    df_final = pd.concat(dataframes, ignore_index=True)
+    
+    # Salva o resultado consolidado em um arquivo Excel
+    output_path = os.path.join(pasta, f"OcorrenciaMensal_{ano}.xlsx")
+    df_final.to_excel(output_path, index=False)
 
-        # Adiciona colunas de unidade, ano e tipo
-        df_long["Unidade"] = unidade
-        df_long["Ano"] = ano
-        df_long["Tipo"] = tipo
-
-        # Adiciona ao conjunto de dados final
-        dataframes.append(df_long)
-
-# Concatena todos os DataFrames em um único
-df_final = pd.concat(dataframes, ignore_index=True)
-
-# Salva o resultado consolidado em um arquivo Excel
-df_final.to_excel("dados_unificados.xlsx", index=False)
-
-print("Arquivos processados com sucesso!")
+    print(f"Arquivos processados com sucesso! Dados salvos em: {output_path}")
+    print(df_final)
+else:
+    print("Nenhum arquivo válido foi encontrado para unificação.")
