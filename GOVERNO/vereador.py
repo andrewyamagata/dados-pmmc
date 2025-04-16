@@ -2,8 +2,8 @@ import pandas as pd
 import re
 
 
-solicitacoes = pd.read_excel("solicitacoes.xlsx")
-enderecos = pd.read_excel("enderecos.xlsx")
+solicitacoes = pd.read_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\solicitacoes.xlsx")
+enderecos = pd.read_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\enderecos.xlsx")
 
 
 def extrair_rua(texto):
@@ -37,4 +37,4 @@ resultado = solicitacoes.merge(enderecos_deduplicado[["LOGRADOURO_NORM", "CEP"]]
 
 resultado_final = resultado.drop(columns=["RUA_NORM", "LOGRADOURO_NORM"])
 
-resultado_final.to_excel("solicitacoes_com_cep.xlsx", index=False)
+resultado_final.to_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\solicitacoes_com_cep.xlsx", index=False)
