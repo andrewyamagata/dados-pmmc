@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 
-solicitacoes = pd.read_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\solicitacoes.xlsx")
+solicitacoes = pd.read_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\COMPILADO.xlsx")
 enderecos = pd.read_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\enderecos.xlsx")
 
 
@@ -28,7 +28,7 @@ enderecos["LOGRADOURO_NORM"] = enderecos["LOGRADOURO"].apply(normalizar)
 
 enderecos_deduplicado = enderecos.drop_duplicates(subset="LOGRADOURO_NORM", keep="first")
 
-resultado = solicitacoes.merge(enderecos_deduplicado[["LOGRADOURO_NORM", "CEP"]], 
+resultado = solicitacoes.merge(enderecos_deduplicado[["LOGRADOURO_NORM", "CEP", "BAIRRO_GRAFIA_TRATADO"]], 
                                 how="left", 
                                 left_on="RUA_NORM", 
                                 right_on="LOGRADOURO_NORM")
@@ -37,4 +37,4 @@ resultado = solicitacoes.merge(enderecos_deduplicado[["LOGRADOURO_NORM", "CEP"]]
 
 resultado_final = resultado.drop(columns=["RUA_NORM", "LOGRADOURO_NORM"])
 
-resultado_final.to_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\solicitacoes_com_cep.xlsx", index=False)
+resultado_final.to_excel(r"C:\Users\andre\OneDrive - PRODESP\Documentos - CODATA-GIDE\UNIFICAÇÃO DE BASES\SOLICITAÇÃO VEREADOR\DADOS\COMPIDALO_COM_CEP.xlsx", index=False)
