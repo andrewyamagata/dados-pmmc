@@ -1,0 +1,32 @@
+========== RESUMO ==========
+Páginas consultadas: 9
+Total coletado: 427
+Total informado pela API: 427
+IDs únicos: 427
+IDs repetidos distintos: 0
+Linhas com ID repetido: 0
+
+========== IDs REPETIDOS ==========
+Empty DataFrame
+Columns: [id, _pagina_api, _url_pagina]
+Index: []
+
+========== RESUMO POR ID ==========
+Empty DataFrame
+Columns: [id, quantidade, paginas]
+Index: []
+
+========== REGISTROS COM TODOS OS CAMPOS VAZIOS ==========
+Nenhum registro totalmente vazio encontrado.
+
+========== RESUMO POR PÁGINA ==========
+ pagina  registros                                                             url                                                  proxima_pagina
+      1         50       https://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=2
+      2         50 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=2 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=3
+      3         50 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=3 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=4
+      4         50 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=4 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=5
+      5         50 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=5 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=6
+      6         50 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=6 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=7
+      7         50 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=7 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=8
+      8         50 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=8 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=9
+      9         27 http://dadosadm.mogidascruzes.sp.gov.br/api/equipamentos?page=9                                                             NaN
